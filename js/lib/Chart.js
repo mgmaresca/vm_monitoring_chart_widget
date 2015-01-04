@@ -284,6 +284,8 @@ window.Chart = function(context){
 
 	this.Line = function(data,options){
 
+		
+
 		chart.Line.defaults = {
 			scaleOverlay : false,
 			scaleOverride : false,
