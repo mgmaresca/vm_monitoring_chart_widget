@@ -1,5 +1,11 @@
+months = ["January", "February", "March", "April", "May", "June", "July"];
+days = ["Monday", "Tuesday", "Wednesday","Thursday", "Friday", "Saturday", "Sunday"];
+hours = ["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00",
+		 "10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00",
+		 "20:00","21:00","22:00","23:00"];
+
 chart_data = {
-	labels: ["January", "February", "March", "April", "May", "June", "July"],
+	labels: months,
 	datasets: [
 	{
 		label: "CPU Usage",
@@ -41,24 +47,36 @@ chart_opt = {
 	onAnimationComplete : null
 };
 
-showChart = function(check_param, scale, div){
+showChart = function(vmID, tenant, token, check_param, scale, div) {
 
 	setChart(check_param, scale);
+
+	
+
 	getData();
 
 	id = '#' + div;
 	$(id).empty();
 
 	$(id).append($('<canvas>', {id: 'chart'}));
-
-	
+	$(id).append($('<div>', {id: 'refresh'
+									}).append($('<button>', {id: 'refresh_button'})));
+	$('#refresh_button').on('click', refreshData);
 
 	var chart_ctx = $("#chart").get(0).getContext("2d");
-	var monitoring_chart = new Chart(chart_ctx).Line(chart_data, chart_opt);
+	monitoring_chart = new Chart(chart_ctx).Line(chart_data, chart_opt);
+	console.log(monitoring_chart);
+
+		
+
+
+	
 
 };
 
 setChart = function(check_param, scale) {
+
+	var date = new Date();
 
 	switch (check_param) {
 
@@ -79,20 +97,38 @@ setChart = function(check_param, scale) {
 	switch (scale) {
 
 		case 'day':
-		chart_data.labels = ["12:00","13:00","14:00","15:00","16:00","17:00","18:00"];
+		var today = date.getDay();
+		var first = [];
+		var last = [];
+
+		for(i = today+1; i <= 6; i++){
+		first[first.length] = days[i];
+		}
+
+		for(i = 0; i<= today; i++){
+		last[last.length] = days[i];
+		}
+
+
+		chart_data.labels = first.concat(last);
 		break;
 		case 'week':
-		chart_data.labels = ["Monday","Tuesday","Wendesday","Thursday","Friday","Saturday","Sunday"];
+		chart_data.labels = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 		break;
 		case 'month':
 		chart_data.labels = ["03/01","03/01","03/01","03/01","03/01","03/01","03/01"];
 		break;
 		default:
-		lconsole.log("Error. Unable to identify the sclae to set chart's labels");
+		lconsole.log("Error. Unable to identify the scale to set chart's labels");
 		break;
 	};
 };
 
 getData = function() {
-	chart_data.data = [28,48,40,19,96,27,100];
+	chart_data.datasets[0].data  = [28,48,40,19,96,27,100];
+};
+
+refreshData = function() {
+	monitoring_chart.datasets[0].data = [55,20,40,40,10,2,60];
+	
 };
