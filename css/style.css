@@ -1,11 +1,14 @@
-body{font-family: sans-serif;}
+body{
+     font-family: comfortaa;
+     color: #002E67;
+}
 
 h1{
 	text-align: center;
 }
 
 #refresh_button{
-	 width:30px;
+	width:30px;
      height:30px;
      text-align: center;
      background: url(img/refresh_icon.png);
@@ -21,5 +24,12 @@ h1{
 
 #myGraph {
      text-align: center;
-	margin-top: 50px;
+	margin-top: 100px;
 }
+
+#title {
+     font-family: comfortaa; 
+     color: rgb(127,127,127);
+}
+
+
