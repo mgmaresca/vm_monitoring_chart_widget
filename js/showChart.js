@@ -4,7 +4,7 @@ hours = ["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00"
 		 "10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00",
 		 "20:00","21:00","22:00","23:00"];
 
-chart_data = {
+data = {
 	labels: months,
 	datasets: [
 	{
@@ -18,14 +18,14 @@ chart_data = {
 	]
 };
 
-chart_opt = {
+opt = {
 	scaleOverlay : false,
 	scaleOverride : false,
 	scaleLineColorX : "transparent",
 	scaleLineColorY : "#002E67",
 	scaleLineWidth : 3,
 	scaleFontFamily : "'comfortaa'",
-	scaleFontSize : 12,
+	scaleFontSize : 9,
 	scaleFontStyle : "normal",
 	scaleFontColorY : "#099EC6",
 	scaleFontColorX : "rgb(127,127,127)",
@@ -51,26 +51,20 @@ showChart = function(vmID, tenant, token, check_param, scale, div) {
 
 	setChart(check_param, scale);
 
-	
-
 	getData();
 
 	id = '#' + div;
 	$(id).empty();
 
+	$(id).append($('<h2 id = "title"> CPU usage </h2>'));
 	$(id).append($('<canvas>', {id: 'chart'}));
 	$(id).append($('<div>', {id: 'refresh'
 									}).append($('<button>', {id: 'refresh_button'})));
 	$('#refresh_button').on('click', refreshData);
 
-	var chart_ctx = $("#chart").get(0).getContext("2d");
-	monitoring_chart = new Chart(chart_ctx).Line(chart_data, chart_opt);
-	console.log(monitoring_chart);
-
-		
-
-
-	
+	var ctx = $("#chart").get(0).getContext("2d");
+	chart = new Chart(ctx).Line(data, opt);
+	console.log(chart);
 
 };
 
@@ -81,13 +75,13 @@ setChart = function(check_param, scale) {
 	switch (check_param) {
 
 		case 'cpu':
-		chart_data.datasets[0].label = "CPU Usage";
+		data.datasets[0].label = "CPU Usage";
 		break;
 		case 'disk':
-		chart_data.datasets[0].label = "Disk Usage";
+		data.datasets[0].label = "Disk Usage";
 		break;
 		case 'mem':
-		chart_data.datasets[0].label = "Memory Usage";
+		data.datasets[0].label = "Memory Usage";
 		break;
 		default:
 		console.log("Error. Unable to identify check_param to set chart's title");
@@ -109,15 +103,17 @@ setChart = function(check_param, scale) {
 		last[last.length] = days[i];
 		}
 
+		data.labels = first.concat(last);
+		break;
 
-		chart_data.labels = first.concat(last);
-		break;
 		case 'week':
-		chart_data.labels = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+		data.labels = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 		break;
+
 		case 'month':
-		chart_data.labels = ["03/01","03/01","03/01","03/01","03/01","03/01","03/01"];
+		data.labels = ["03/01","03/01","03/01","03/01","03/01","03/01","03/01"];
 		break;
+
 		default:
 		lconsole.log("Error. Unable to identify the scale to set chart's labels");
 		break;
@@ -125,10 +121,10 @@ setChart = function(check_param, scale) {
 };
 
 getData = function() {
-	chart_data.datasets[0].data  = [28,48,40,19,96,27,100];
+	data.datasets[0].data  = [28,48,40,200,96,27,100];
 };
 
 refreshData = function() {
-	monitoring_chart.datasets[0].data = [55,20,40,40,10,2,60];
+	chart.update();
 	
 };
